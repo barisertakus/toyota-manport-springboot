@@ -1,6 +1,4 @@
-package com.barisertakus.toyotamanport.entity;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.barisertakus.toyotamanport.enums;
 
 public enum ResponsibleTeam {
     ManufacturingSystems("Manufacturing Systems"),

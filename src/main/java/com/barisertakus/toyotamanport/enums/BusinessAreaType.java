@@ -1,4 +1,4 @@
-package com.barisertakus.toyotamanport.entity;
+package com.barisertakus.toyotamanport.enums;
 
 public enum BusinessAreaType {
     Manufacturing,
