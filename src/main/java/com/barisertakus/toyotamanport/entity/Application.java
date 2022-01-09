@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,13 +49,17 @@ public class Application {
     @Enumerated(EnumType.STRING)
     private ResponsibleTeam responsibleTeam;
 
+    @OneToMany(mappedBy = "application")
+    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
+
+    @OneToMany(mappedBy = "application")
+    List<Link> links = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "application_plants",
             joinColumns = @JoinColumn(name="application_id"),
             inverseJoinColumns = @JoinColumn(name="plant_id"))
-    private List<Plant> plants;
+    private List<Plant> plants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "application")
-    List<ApplicationServerIssue> applicationServerIssues;
 }
