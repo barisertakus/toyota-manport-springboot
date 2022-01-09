@@ -1,11 +1,12 @@
 package com.barisertakus.toyotamanport.entity;
 
+import com.barisertakus.toyotamanport.enums.BusinessAreaType;
+import com.barisertakus.toyotamanport.enums.ResponsibleTeam;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import com.barisertakus.toyotamanport.enums.*;
 
 @Entity
 @Data
@@ -41,6 +42,7 @@ public class Application {
 
     private String database;
 
+    @Enumerated(EnumType.STRING)
     private BusinessAreaType businessAreaType;
 
     @Enumerated(EnumType.STRING)
