@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @Table
-public class Role {
+public class Role extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

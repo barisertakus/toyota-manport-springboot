@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class ApplicationServerIssue {
+public class ApplicationServerIssue extends Auditable<String>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
