@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Plant {
+public class Plant{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Plant {
     private int liveAppCount;
 
     @ManyToMany(mappedBy = "plants")
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
 
     @OneToMany(mappedBy = "plant")
     private List<Server> servers = new ArrayList<>();

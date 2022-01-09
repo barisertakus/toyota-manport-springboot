@@ -3,11 +3,12 @@ package com.barisertakus.toyotamanport.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-public class Server {
+public class Server{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +21,5 @@ public class Server {
     private Plant plant;
 
     @OneToMany(mappedBy = "server")
-    List<ApplicationServerIssue> applicationServerIssues;
+    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
 }

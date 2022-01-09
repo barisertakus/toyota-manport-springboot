@@ -4,6 +4,7 @@ import javax.persistence.*;
 import com.barisertakus.toyotamanport.enums.ImpactType;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,6 +23,6 @@ public class Issue {
     private String description;
 
     @OneToMany(mappedBy = "issue")
-    List<ApplicationServerIssue> applicationServerIssues;
+    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
 
 }
