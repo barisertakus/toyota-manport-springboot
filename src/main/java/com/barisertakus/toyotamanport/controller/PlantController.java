@@ -28,4 +28,9 @@ public class PlantController {
     public ResponseEntity<Page<PlantDTO>> getAllByPagination(@RequestParam int pageNo, int pageSize, String sortType, String sortField){
         return ResponseEntity.ok(plantService.getAll(pageNo, pageSize, sortType, sortField));
     }
+
+    @GetMapping("getAllPlants")
+    public ResponseEntity<List<PlantDTO>> getAllPlants(){
+        return ResponseEntity.ok(plantService.getAllPlants());
+    }
 }

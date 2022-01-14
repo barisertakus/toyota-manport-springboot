@@ -41,4 +41,10 @@ public class PlantServiceImpl implements PlantService {
         Page<Plant> plants = plantRepository.findByIsActiveTrue(pageable);
         return modelMapper.map(plants, new TypeToken<Page<PlantDTO>>(){}.getType());
     }
+
+    @Override
+    public List<PlantDTO> getAllPlants() {
+        List<Plant> plants = plantRepository.getAllByIsActiveTrue();
+        return modelMapper.map(plants, new TypeToken<List<PlantDTO>>(){}.getType());
+    }
 }
