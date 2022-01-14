@@ -9,5 +9,8 @@ import java.util.List;
 
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     boolean existsByShortCodeOrFullName(String shortCode, String fullName);
+
     Page<Plant> findByIsActiveTrue(Pageable pageable);
+
+    List<Plant> getAllByIsActiveTrue();
 }

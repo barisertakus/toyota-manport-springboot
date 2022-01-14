@@ -10,4 +10,6 @@ public interface PlantService {
     Boolean save(PlantCreateDTO plantDTO);
 
     Page<PlantDTO> getAll(int pageNo, int pageSize, String sortType, String sortField);
+
+    List<PlantDTO> getAllPlants();
 }
