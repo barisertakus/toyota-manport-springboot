@@ -50,16 +50,12 @@ public class Application extends BaseEntity {
     private ResponsibleTeam responsibleTeam;
 
     @OneToMany(mappedBy = "application")
+    List<ApplicationPlant> applicationPlants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "application")
     List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
 
     @OneToMany(mappedBy = "application")
     List<Link> links = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "application_plants",
-            joinColumns = @JoinColumn(name="application_id"),
-            inverseJoinColumns = @JoinColumn(name="plant_id"))
-    private List<Plant> plants = new ArrayList<>();
 
 }
