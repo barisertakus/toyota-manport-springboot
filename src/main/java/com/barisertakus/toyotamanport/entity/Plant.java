@@ -24,8 +24,8 @@ public class Plant extends BaseEntity{
 
     private int liveAppCount;
 
-    @ManyToMany(mappedBy = "plants")
-    private List<Application> applications = new ArrayList<>();
+    @OneToMany(mappedBy = "plant")
+    private List<ApplicationPlant> applicationPlants = new ArrayList<>();
 
     @OneToMany(mappedBy = "plant")
     private List<Server> servers = new ArrayList<>();
