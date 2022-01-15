@@ -9,7 +9,7 @@ import java.util.Objects;
 public class CreatePageable {
     public static Pageable create(int pageNo, int pageSize, String sortType, String sortField) {
         Sort sort = null;
-        boolean sortFieldEmpty = sortField != null && !sortField.isEmpty();
+        boolean sortFieldEmpty = sortField == null || sortField.isEmpty();
         if ("asc".equals(sortType) && !sortFieldEmpty) {
             sort = Sort.by(Sort.Direction.ASC, sortField);
         } else if ("desc".equals(sortType) && !sortFieldEmpty)
