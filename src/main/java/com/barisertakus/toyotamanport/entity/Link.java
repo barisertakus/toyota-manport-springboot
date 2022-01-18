@@ -42,6 +42,7 @@ public class Link extends BaseEntity{
     private ServerType serverType; // prod-test
 
     @ManyToOne
-    @JoinColumn(name = "application_id")
-    private Application application;
+    @JoinColumn(name = "application_plant_id")
+    ApplicationPlant applicationPlant;
+
 }
