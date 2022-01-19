@@ -54,8 +54,4 @@ public class Application extends BaseEntity {
 
     @OneToMany(mappedBy = "application")
     List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
-
-    @OneToMany(mappedBy = "application")
-    List<Link> links = new ArrayList<>();
-
 }

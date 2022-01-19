@@ -3,6 +3,8 @@ package com.barisertakus.toyotamanport.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,6 +16,8 @@ public class ApplicationPlant extends BaseEntity{
     @Id
     private Long id;
 
+    private Boolean track;
+
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;
@@ -22,5 +26,7 @@ public class ApplicationPlant extends BaseEntity{
     @JoinColumn(name = "plant_id")
     private Plant plant;
 
-    private Boolean track;
+    @OneToMany(mappedBy = "applicationPlant")
+    private List<Link> links = new ArrayList<>();
+
 }
