@@ -26,4 +26,14 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
         log.error("Application and plant relationship could not be found. applicationId : {}, plantId : {}", applicationId, plantId);
         throw new IllegalArgumentException("Application and Plant relationship could not be found.");
     }
+
+    @Override
+    public ApplicationPlant findById(Long applicationPlantId) {
+        Optional<ApplicationPlant> applicationPlant = applicationPlantRepository.findById(applicationPlantId);
+        if(applicationPlant.isPresent()){
+            return applicationPlant.get();
+        }
+        log.error("Application and plant record could not be found. applicationPlantId {}", applicationPlantId);
+        return null;
+    }
 }
