@@ -29,4 +29,7 @@ public class ApplicationPlant extends BaseEntity{
     @OneToMany(mappedBy = "applicationPlant")
     private List<Link> links = new ArrayList<>();
 
+    @OneToMany(mappedBy = "applicationPlant")
+    private List<Infrastructure> infrastructures = new ArrayList<>();
+
 }
