@@ -10,12 +10,15 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Log4j2
 public class InfrastructureServiceImpl implements InfrastructureService {
-    private InfrastructureRepository infrastructureRepository;
-    private ApplicationPlantService applicationPlantService;
-    private ModelMapper modelMapper;
+    private final InfrastructureRepository infrastructureRepository;
+    private final ApplicationPlantService applicationPlantService;
+    private final ModelMapper modelMapper;
 
     public InfrastructureServiceImpl(InfrastructureRepository infrastructureRepository, ApplicationPlantService applicationPlantService, ModelMapper modelMapper) {
         this.infrastructureRepository = infrastructureRepository;
@@ -25,13 +28,29 @@ public class InfrastructureServiceImpl implements InfrastructureService {
 
     @Override
     public Boolean save(InfrastructureDTO infrastructureDTO, ApplicationPlant applicationPlant) {
-        if(applicationPlant != null){
+        if (applicationPlant != null) {
             Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
             infrastructureRepository.save(infrastructure);
             return true;
         }
         log.error("Application Plant record couldn't be found.");
         throw new IllegalArgumentException("An error occurred while saving the Infrastructure!");
+    }
+
+    @Override
+    public Boolean saveAll(List<InfrastructureDTO> infrastructureDTOList, ApplicationPlant applicationPlant) {
+        if (applicationPlant != null) {
+            List<Infrastructure> infrastructures = infrastructureDTOList.stream().map(infrastructureDTO -> {
+                Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
+                infrastructure.setApplicationPlant(applicationPlant);
+                return infrastructure;
+            }).collect(Collectors.toList());
+
+            infrastructureRepository.saveAll(infrastructures);
+            return true;
+        }
+        log.error("Application Plant record couldn't be found.");
+        throw new IllegalArgumentException("An error occurred while saving infrastructures!");
     }
 
 }
