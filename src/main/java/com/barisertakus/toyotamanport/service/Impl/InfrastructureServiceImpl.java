@@ -24,8 +24,7 @@ public class InfrastructureServiceImpl implements InfrastructureService {
     }
 
     @Override
-    public Boolean save(InfrastructureDTO infrastructureDTO) {
-        ApplicationPlant applicationPlant = applicationPlantService.findById(infrastructureDTO.getApplicationPlantId());
+    public Boolean save(InfrastructureDTO infrastructureDTO, ApplicationPlant applicationPlant) {
         if(applicationPlant != null){
             Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
             infrastructureRepository.save(infrastructure);
