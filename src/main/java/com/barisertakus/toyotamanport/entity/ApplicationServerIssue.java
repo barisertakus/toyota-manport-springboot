@@ -1,11 +1,13 @@
 package com.barisertakus.toyotamanport.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class ApplicationServerIssue extends Auditable<String>{
 
     @Id
@@ -24,4 +26,9 @@ public class ApplicationServerIssue extends Auditable<String>{
     @JoinColumn(name = "issue_id")
     private Issue issue;
 
+    public ApplicationServerIssue(Application application, Server server, Issue issue) {
+        this.application = application;
+        this.server = server;
+        this.issue = issue;
+    }
 }
