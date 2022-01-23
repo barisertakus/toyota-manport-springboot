@@ -30,6 +30,8 @@ public class InfrastructureServiceImpl implements InfrastructureService {
     public Boolean save(InfrastructureDTO infrastructureDTO, ApplicationPlant applicationPlant) {
         if (applicationPlant != null) {
             Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
+            infrastructure.setApplicationPlant(applicationPlant);
+            applicationPlant.getInfrastructures().add(infrastructure);
             infrastructureRepository.save(infrastructure);
             return true;
         }
@@ -43,6 +45,7 @@ public class InfrastructureServiceImpl implements InfrastructureService {
             List<Infrastructure> infrastructures = infrastructureDTOList.stream().map(infrastructureDTO -> {
                 Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
                 infrastructure.setApplicationPlant(applicationPlant);
+                applicationPlant.getInfrastructures().add(infrastructure);
                 return infrastructure;
             }).collect(Collectors.toList());
 

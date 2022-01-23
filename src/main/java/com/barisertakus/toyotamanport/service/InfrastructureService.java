@@ -2,7 +2,6 @@ package com.barisertakus.toyotamanport.service;
 
 import com.barisertakus.toyotamanport.dto.InfrastructureDTO;
 import com.barisertakus.toyotamanport.entity.ApplicationPlant;
-import com.barisertakus.toyotamanport.entity.Infrastructure;
 
 import java.util.List;
 
