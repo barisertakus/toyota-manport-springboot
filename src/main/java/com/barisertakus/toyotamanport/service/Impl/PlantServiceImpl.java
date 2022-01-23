@@ -47,4 +47,10 @@ public class PlantServiceImpl implements PlantService {
         List<Plant> plants = plantRepository.getAllByIsActiveTrue();
         return modelMapper.map(plants, new TypeToken<List<PlantDTO>>(){}.getType());
     }
+
+    @Override
+    public List<Plant> findByIdIn(List<Long> plantIdList) {
+        List<Plant> plants = plantRepository.findByIdIn(plantIdList);
+        return plants;
+    }
 }
