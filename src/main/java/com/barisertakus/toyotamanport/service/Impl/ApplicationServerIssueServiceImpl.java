@@ -26,9 +26,18 @@ public class ApplicationServerIssueServiceImpl implements ApplicationServerIssue
     @Override
     public Boolean saveAll(Application application, Server server, List<IssueCreateDTO> issueDTOList){
         List<Issue> issues = issueService.saveAll(issueDTOList);
-        List<ApplicationServerIssue> applicationServerIssues = issues.stream()
-                .map(issue -> new ApplicationServerIssue(application, server, issue)).collect(Collectors.toList());
+        List<ApplicationServerIssue> applicationServerIssues = issues.stream().map(issue -> {
+            ApplicationServerIssue applicationServerIssue = new ApplicationServerIssue(application, server, issue);
+            addApplicationServerIssueToObjects(applicationServerIssue, application, server, issue);
+            return applicationServerIssue;
+        }).collect(Collectors.toList());
         applicationServerIssueRepository.saveAll(applicationServerIssues);
         return true;
+    }
+
+    private void addApplicationServerIssueToObjects(ApplicationServerIssue applicationServerIssue, Application application, Server server, Issue issue){
+        application.getApplicationServerIssues().add(applicationServerIssue);
+        server.getApplicationServerIssues().add(applicationServerIssue);
+        issue.getApplicationServerIssues().add(applicationServerIssue);
     }
 }
