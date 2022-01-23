@@ -5,13 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InfrastructureDTO {
+public class IssueDTO {
 
     private Long id;
 
-    private String jdkVersion;
+    private String issueType;
 
-    private String jettyVersion;
+    private String impactType;
 
-    private String nodeJsVersion;
+    private String description;
 }
