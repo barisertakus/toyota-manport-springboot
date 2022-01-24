@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ApplicationServerIssueService {
 
-    Boolean saveAll(Application application, Server server, List<IssueCreateDTO> issueDTOList);
+    Boolean saveAll(Application application, List<IssueCreateDTO> issueDTOList);
 
 }

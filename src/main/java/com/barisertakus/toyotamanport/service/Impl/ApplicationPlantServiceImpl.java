@@ -29,12 +29,11 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
     }
 
     @Override
-    public Boolean saveByApplicationAndPlantList(Application application, List<PlantWithTrackDTO> plantDTOList){
+    public List<ApplicationPlant> saveByApplicationAndPlantList(Application application, List<PlantWithTrackDTO> plantDTOList){
         if(application != null){
             List<Plant> plants = getPlantsByPlantDTOList(plantDTOList);
             List<ApplicationPlant> applicationPlants = generateApplicationPlants(application, plantDTOList, plants);
-            applicationPlantRepository.saveAll(applicationPlants);
-            return true;
+            return applicationPlantRepository.saveAll(applicationPlants);
         }
         log.error("Application record couldn't be found!");
         throw new IllegalArgumentException("Application record couldn't be found!");

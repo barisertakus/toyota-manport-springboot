@@ -7,7 +7,7 @@ import com.barisertakus.toyotamanport.entity.ApplicationPlant;
 import java.util.List;
 
 public interface ApplicationPlantService{
-    Boolean saveByApplicationAndPlantList(Application application, List<PlantWithTrackDTO> plantDTOList);
+    List<ApplicationPlant> saveByApplicationAndPlantList(Application application, List<PlantWithTrackDTO> plantDTOList);
     ApplicationPlant findByApplicationIdAndPlantId(Long applicationId, Long plantId);
     ApplicationPlant findById(Long applicationPlantId);
 }
