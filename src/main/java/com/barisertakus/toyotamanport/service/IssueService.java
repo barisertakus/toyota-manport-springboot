@@ -8,5 +8,5 @@ import com.barisertakus.toyotamanport.entity.Issue;
 import java.util.List;
 
 public interface IssueService {
-    List<Issue> saveAll(List<IssueCreateDTO> issueDTOS);
+    List<Issue> saveAll(List<Issue> issues);
 }

@@ -23,10 +23,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Issue> saveAll(List<IssueCreateDTO> issueDTOS) {
-
-        List<Issue> issues = issueDTOS.stream()
-                .map(issueDTO -> modelMapper.map(issueDTO, Issue.class)).collect(Collectors.toList());
+    public List<Issue> saveAll(List<Issue> issues) {
         return issueRepository.saveAll(issues);
     }
 }
