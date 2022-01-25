@@ -3,6 +3,7 @@ package com.barisertakus.toyotamanport.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,7 +19,6 @@ public class Infrastructure {
 
     private String nodeJsVersion;
 
-    @ManyToOne
-    @JoinColumn(name = "application_plant_id")
-    ApplicationPlant applicationPlant;
+    @OneToMany(mappedBy = "infrastructure")
+    List<ApplicationPlant> applicationPlants;
 }

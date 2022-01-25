@@ -26,11 +26,12 @@ public class ApplicationPlant extends BaseEntity{
     @JoinColumn(name = "plant_id")
     private Plant plant;
 
-    @OneToMany(mappedBy = "applicationPlant")
-    private List<Link> links = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "infrastructure_id")
+    private Infrastructure infrastructure;
 
     @OneToMany(mappedBy = "applicationPlant")
-    private List<Infrastructure> infrastructures = new ArrayList<>();
+    private List<Link> links = new ArrayList<>();
 
     public ApplicationPlant(Boolean track, Application application, Plant plant) {
         this.track = track;
