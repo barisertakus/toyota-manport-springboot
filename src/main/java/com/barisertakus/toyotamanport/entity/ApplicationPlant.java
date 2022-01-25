@@ -33,9 +33,10 @@ public class ApplicationPlant extends BaseEntity{
     @OneToMany(mappedBy = "applicationPlant")
     private List<Link> links = new ArrayList<>();
 
-    public ApplicationPlant(Boolean track, Application application, Plant plant) {
+    public ApplicationPlant(Boolean track, Application application, Plant plant, Infrastructure infrastructure) {
         this.track = track;
         this.application = application;
         this.plant = plant;
+        this.infrastructure = infrastructure;
     }
 }

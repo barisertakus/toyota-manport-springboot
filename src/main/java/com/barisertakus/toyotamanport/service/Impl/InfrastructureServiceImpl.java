@@ -27,32 +27,22 @@ public class InfrastructureServiceImpl implements InfrastructureService {
     }
 
     @Override
-    public Boolean save(InfrastructureDTO infrastructureDTO, ApplicationPlant applicationPlant) {
-        if (applicationPlant != null) {
-            Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
-            infrastructure.setApplicationPlant(applicationPlant);
-            applicationPlant.getInfrastructures().add(infrastructure);
+    public Boolean save(Infrastructure infrastructure) {
+        if (infrastructure != null) {
             infrastructureRepository.save(infrastructure);
             return true;
         }
-        log.error("Application Plant record couldn't be found.");
+        log.error("An error occurred while saving the Infrastructure!");
         throw new IllegalArgumentException("An error occurred while saving the Infrastructure!");
     }
 
     @Override
-    public Boolean saveAll(List<InfrastructureDTO> infrastructureDTOList, ApplicationPlant applicationPlant) {
-        if (applicationPlant != null) {
-            List<Infrastructure> infrastructures = infrastructureDTOList.stream().map(infrastructureDTO -> {
-                Infrastructure infrastructure = modelMapper.map(infrastructureDTO, Infrastructure.class);
-                infrastructure.setApplicationPlant(applicationPlant);
-                applicationPlant.getInfrastructures().add(infrastructure);
-                return infrastructure;
-            }).collect(Collectors.toList());
-
+    public Boolean saveAll(List<Infrastructure> infrastructures) {
+        if (infrastructures != null) {
             infrastructureRepository.saveAll(infrastructures);
             return true;
         }
-        log.error("Application Plant record couldn't be found.");
+        log.error("An error occurred while saving infrastructures!");
         throw new IllegalArgumentException("An error occurred while saving infrastructures!");
     }
 

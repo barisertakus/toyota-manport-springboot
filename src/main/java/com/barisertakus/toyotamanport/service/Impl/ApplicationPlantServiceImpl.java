@@ -1,15 +1,19 @@
 package com.barisertakus.toyotamanport.service.Impl;
 
+import com.barisertakus.toyotamanport.dto.ApplicationPlantsAndInfrastructuresDTO;
+import com.barisertakus.toyotamanport.dto.InfrastructureCreateDTO;
 import com.barisertakus.toyotamanport.dto.PlantDTO;
 import com.barisertakus.toyotamanport.dto.PlantWithTrackDTO;
 import com.barisertakus.toyotamanport.entity.*;
 import com.barisertakus.toyotamanport.repository.ApplicationPlantRepository;
 import com.barisertakus.toyotamanport.service.ApplicationPlantService;
+import com.barisertakus.toyotamanport.service.InfrastructureService;
 import com.barisertakus.toyotamanport.service.PlantService;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,59 +24,80 @@ import java.util.stream.Collectors;
 public class ApplicationPlantServiceImpl implements ApplicationPlantService {
     private final ApplicationPlantRepository applicationPlantRepository;
     private final PlantService plantService;
+    private final InfrastructureService infrastructureService;
     private final ModelMapper modelMapper;
 
-    public ApplicationPlantServiceImpl(ApplicationPlantRepository applicationPlantRepository, PlantService plantService, ModelMapper modelMapper) {
+    public ApplicationPlantServiceImpl(ApplicationPlantRepository applicationPlantRepository, PlantService plantService, InfrastructureService infrastructureService, ModelMapper modelMapper) {
         this.applicationPlantRepository = applicationPlantRepository;
         this.plantService = plantService;
+        this.infrastructureService = infrastructureService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public List<ApplicationPlant> saveByApplicationAndPlantList(Application application, List<PlantWithTrackDTO> plantDTOList){
-        if(application != null){
+    public List<ApplicationPlant> saveByApplication(Application application, List<PlantWithTrackDTO> plantDTOList, List<InfrastructureCreateDTO> infrastructureDTOList) {
+        if (application != null) {
             List<Plant> plants = getPlantsByPlantDTOList(plantDTOList);
-            List<ApplicationPlant> applicationPlants = generateApplicationPlants(application, plantDTOList, plants);
+            ApplicationPlantsAndInfrastructuresDTO applicationPlantsAndInfrastructures =
+                    generateApplicationPlantsAndInfrastructures(application, plantDTOList, plants, infrastructureDTOList);
+            List<ApplicationPlant> applicationPlants = applicationPlantsAndInfrastructures.getApplicationPlants();
+            List<Infrastructure> infrastructures = applicationPlantsAndInfrastructures.getInfrastructures();
+            infrastructureService.saveAll(infrastructures);
             return applicationPlantRepository.saveAll(applicationPlants);
         }
         log.error("Application record couldn't be found!");
         throw new IllegalArgumentException("Application record couldn't be found!");
     }
 
-    private List<ApplicationPlant> generateApplicationPlants(Application application, List<PlantWithTrackDTO> plantDTOList, List<Plant> plants){
+    private ApplicationPlantsAndInfrastructuresDTO generateApplicationPlantsAndInfrastructures(
+            Application application, List<PlantWithTrackDTO> plantDTOList, List<Plant> plants, List<InfrastructureCreateDTO> infrastructureDTOList) {
+        List<Infrastructure> infrastructures = new ArrayList<>();
         List<ApplicationPlant> applicationPlants = plantDTOList.stream().map(plantDTO -> {
             Boolean track = plantDTO.getTrack(); // application - country track.
             Plant plant = getPlantFromPlantListById(plantDTO.getId(), plants);
-            ApplicationPlant applicationPlant = new ApplicationPlant(track, application, plant);
-            addApplicationPlantToObjects(applicationPlant, application, plant);
+            Infrastructure infrastructure = getInfrastructureByCountry(plant.getCountry(), infrastructureDTOList);
+            infrastructures.add(infrastructure);
+            ApplicationPlant applicationPlant = new ApplicationPlant(track, application, plant, infrastructure);
+            addApplicationPlantToObjects(applicationPlant, application, plant, infrastructure);
             return applicationPlant;
         }).collect(Collectors.toList());
-        return applicationPlants;
+        return new ApplicationPlantsAndInfrastructuresDTO(applicationPlants, infrastructures);
     }
 
-    private List<Plant> getPlantsByPlantDTOList(List<PlantWithTrackDTO> plantDTOList){
+    private List<Plant> getPlantsByPlantDTOList(List<PlantWithTrackDTO> plantDTOList) {
         List<Long> plantIdList = getPlantIdList(plantDTOList);
         List<Plant> plants = plantService.findByIdIn(plantIdList);
         return plants;
     }
 
-    private List<Long> getPlantIdList(List<PlantWithTrackDTO> plantDTOList){
+    private List<Long> getPlantIdList(List<PlantWithTrackDTO> plantDTOList) {
         return plantDTOList.stream().map(PlantWithTrackDTO::getId).collect(Collectors.toList());
     }
 
-    private Plant getPlantFromPlantListById(Long id, List<Plant> plants){
+    private Plant getPlantFromPlantListById(Long id, List<Plant> plants) {
         Optional<Plant> plantOptional = plants.stream()
                 .filter(plant -> Objects.equals(plant.getId(), id)).findAny();
-        if(plantOptional.isPresent()){
+        if (plantOptional.isPresent()) {
             return plantOptional.get();
         }
-        log.error("Plant record couldn't be found with parameter id : {} !",id);
+        log.error("Plant record couldn't be found with parameter id : {} !", id);
         throw new IllegalArgumentException("Plant record couldn't be found!");
     }
 
-    private void addApplicationPlantToObjects(ApplicationPlant applicationPlant, Application application, Plant plant){
+    private Infrastructure getInfrastructureByCountry(String country, List<InfrastructureCreateDTO> infrastructures) {
+        Optional<InfrastructureCreateDTO> infrastructureOpt = infrastructures.stream()
+                .filter(infrastructure -> Objects.equals(infrastructure.getCountry(), country)).findAny();
+        if (infrastructureOpt.isPresent()) {
+            return modelMapper.map(infrastructureOpt.get(), Infrastructure.class);
+        }
+        log.error("Infrastructure couldn't be found with parameter country : {} !", country);
+        throw new IllegalArgumentException("Infrastructure couldn't be found!");
+    }
+
+    private void addApplicationPlantToObjects(ApplicationPlant applicationPlant, Application application, Plant plant, Infrastructure infrastructure) {
         application.getApplicationPlants().add(applicationPlant);
         plant.getApplicationPlants().add(applicationPlant);
+        infrastructure.getApplicationPlants().add(applicationPlant);
     }
 
     @Override
@@ -88,7 +113,7 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
     @Override
     public ApplicationPlant findById(Long applicationPlantId) {
         Optional<ApplicationPlant> applicationPlant = applicationPlantRepository.findById(applicationPlantId);
-        if(applicationPlant.isPresent()){
+        if (applicationPlant.isPresent()) {
             return applicationPlant.get();
         }
         log.error("Application and plant record could not be found. applicationPlantId {}", applicationPlantId);
