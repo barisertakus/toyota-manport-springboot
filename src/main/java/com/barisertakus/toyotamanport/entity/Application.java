@@ -3,6 +3,7 @@ package com.barisertakus.toyotamanport.entity;
 import com.barisertakus.toyotamanport.enums.BusinessAreaType;
 import com.barisertakus.toyotamanport.enums.ResponsibleTeam;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(of = {"id", "shortName"})
 public class Application extends BaseEntity {
 
     @Id
@@ -25,7 +27,7 @@ public class Application extends BaseEntity {
 
     private Boolean track = true;
 
-    private Boolean lineStopRisk = false;
+    private Boolean lineStopRisk;
 
     private int lineCountOfBackendCode;
 

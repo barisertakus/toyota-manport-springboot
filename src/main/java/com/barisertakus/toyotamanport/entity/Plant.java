@@ -1,6 +1,7 @@
 package com.barisertakus.toyotamanport.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(of = { "id", "country" })
 public class Plant extends BaseEntity{
 
     @Id

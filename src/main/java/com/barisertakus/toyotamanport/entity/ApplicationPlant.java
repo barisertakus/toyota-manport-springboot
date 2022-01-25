@@ -1,6 +1,8 @@
 package com.barisertakus.toyotamanport.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,9 +13,12 @@ import java.util.List;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"application_id", "plant_id"})
 })
+@NoArgsConstructor
+@ToString(of = {"id", "track"})
 public class ApplicationPlant extends BaseEntity{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Boolean track;
