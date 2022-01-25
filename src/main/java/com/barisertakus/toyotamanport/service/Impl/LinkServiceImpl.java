@@ -1,5 +1,6 @@
 package com.barisertakus.toyotamanport.service.Impl;
 
+import com.barisertakus.toyotamanport.dto.LinkCreateDTO;
 import com.barisertakus.toyotamanport.dto.LinkDTO;
 import com.barisertakus.toyotamanport.entity.ApplicationPlant;
 import com.barisertakus.toyotamanport.entity.Link;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,19 +26,29 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
-    public Boolean saveAll(List<LinkDTO> linkDTOList, ApplicationPlant applicationPlant) {
-        if(applicationPlant != null){
+    public Boolean saveAll(List<LinkCreateDTO> linkDTOList, List<ApplicationPlant> applicationPlants) {
+        if(applicationPlants != null){
             List<Link> links = linkDTOList.stream().map(linkDTO -> {
+                ApplicationPlant applicationPlant = getApplicationPlantByCountry(linkDTO.getCountry(), applicationPlants);
                 Link link = modelMapper.map(linkDTO, Link.class);
                 link.setApplicationPlant(applicationPlant);
                 applicationPlant.getLinks().add(link);
                 return link;
             }).collect(Collectors.toList());
-
             linkRepository.saveAll(links);
             return true;
         }
         log.error("Application Plant record couldn't be found.");
         throw new IllegalArgumentException("An error occurred while saving links!");
+    }
+
+    private ApplicationPlant getApplicationPlantByCountry(String country, List<ApplicationPlant> applicationPlants){
+        Optional<ApplicationPlant> applicationPlantOpt = applicationPlants.stream().filter(applicationPlant -> applicationPlant.getPlant().getCountry().equals(country))
+                .findAny();
+        if(applicationPlantOpt.isPresent()){
+            return applicationPlantOpt.get();
+        }
+        log.error("ApplicationPlant relationship couldn't be found. country : {}", country);
+        throw new IllegalArgumentException("ApplicationPlant relationship couldn't be found!");
     }
 }

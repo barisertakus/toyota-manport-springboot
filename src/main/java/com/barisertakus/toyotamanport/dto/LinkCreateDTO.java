@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LinkDTO {
-
+public class LinkCreateDTO {
     private Long id;
 
     private String appNode1;
@@ -36,4 +35,6 @@ public class LinkDTO {
     private String dbNode2;
 
     private String serverType;
+
+    private String country;
 }
