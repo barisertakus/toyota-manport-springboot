@@ -3,6 +3,7 @@ package com.barisertakus.toyotamanport.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,5 +21,5 @@ public class Infrastructure {
     private String nodeJsVersion;
 
     @OneToMany(mappedBy = "infrastructure")
-    List<ApplicationPlant> applicationPlants;
+    List<ApplicationPlant> applicationPlants = new ArrayList<>();
 }

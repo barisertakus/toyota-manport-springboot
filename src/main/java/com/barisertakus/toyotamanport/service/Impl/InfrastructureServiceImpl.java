@@ -17,12 +17,10 @@ import java.util.stream.Collectors;
 @Log4j2
 public class InfrastructureServiceImpl implements InfrastructureService {
     private final InfrastructureRepository infrastructureRepository;
-    private final ApplicationPlantService applicationPlantService;
     private final ModelMapper modelMapper;
 
-    public InfrastructureServiceImpl(InfrastructureRepository infrastructureRepository, ApplicationPlantService applicationPlantService, ModelMapper modelMapper) {
+    public InfrastructureServiceImpl(InfrastructureRepository infrastructureRepository, ModelMapper modelMapper) {
         this.infrastructureRepository = infrastructureRepository;
-        this.applicationPlantService = applicationPlantService;
         this.modelMapper = modelMapper;
     }
 

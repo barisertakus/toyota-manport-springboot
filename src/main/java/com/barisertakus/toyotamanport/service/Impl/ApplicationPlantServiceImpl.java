@@ -56,7 +56,8 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
             Boolean track = plantDTO.getTrack(); // application - country track.
             Plant plant = getPlantFromPlantListById(plantDTO.getId(), plants);
             Infrastructure infrastructure = getInfrastructureByCountry(plant.getCountry(), infrastructureDTOList);
-            infrastructures.add(infrastructure);
+            if(infrastructure != null)
+                infrastructures.add(infrastructure);
             ApplicationPlant applicationPlant = new ApplicationPlant(track, application, plant, infrastructure);
             addApplicationPlantToObjects(applicationPlant, application, plant, infrastructure);
             return applicationPlant;
@@ -90,14 +91,14 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
         if (infrastructureOpt.isPresent()) {
             return modelMapper.map(infrastructureOpt.get(), Infrastructure.class);
         }
-        log.error("Infrastructure couldn't be found with parameter country : {} !", country);
-        throw new IllegalArgumentException("Infrastructure couldn't be found!");
+        return null;
     }
 
     private void addApplicationPlantToObjects(ApplicationPlant applicationPlant, Application application, Plant plant, Infrastructure infrastructure) {
         application.getApplicationPlants().add(applicationPlant);
         plant.getApplicationPlants().add(applicationPlant);
-        infrastructure.getApplicationPlants().add(applicationPlant);
+        if(infrastructure != null)
+            infrastructure.getApplicationPlants().add(applicationPlant);
     }
 
     @Override
