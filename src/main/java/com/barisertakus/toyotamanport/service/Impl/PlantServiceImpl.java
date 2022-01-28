@@ -39,7 +39,7 @@ public class PlantServiceImpl implements PlantService {
     public Page<PlantDTO> getAll(int pageNo, int pageSize, String sortType, String sortField) {
         Pageable pageable = CreatePageable.create(pageNo, pageSize, sortType, sortField);
         Page<Plant> plants = plantRepository.findByIsActiveTrue(pageable);
-        return modelMapper.map(plants, new TypeToken<Page<PlantDTO>>(){}.getType());
+        return plants.map(plant -> modelMapper.map(plant, PlantDTO.class));
     }
 
     @Override
