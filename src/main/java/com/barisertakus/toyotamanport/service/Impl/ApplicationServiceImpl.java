@@ -5,7 +5,10 @@ import com.barisertakus.toyotamanport.entity.Application;
 import com.barisertakus.toyotamanport.entity.ApplicationPlant;
 import com.barisertakus.toyotamanport.repository.ApplicationRepository;
 import com.barisertakus.toyotamanport.service.*;
+import com.barisertakus.toyotamanport.utils.CreatePageable;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,5 +47,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         linkService.saveAll(links, applicationPlants);
         applicationServerIssueService.saveAll(application, issues);
         return true;
+    }
+
+    @Override
+    public Page<ApplicationManagementDTO> getAll(int pageNo, int pageSize, String sortType, String sortField) {
+        Pageable pageable = CreatePageable.create(pageNo, pageSize, sortType, sortField);
+        Page<ApplicationManagementDTO> applications = applicationRepository.findApplicationsWithLivePlants(pageable);
+        return applications;
     }
 }
