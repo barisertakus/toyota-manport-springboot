@@ -1,5 +1,7 @@
 package com.barisertakus.toyotamanport.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -23,6 +25,7 @@ public class ApplicationPlant extends BaseEntity{
 
     private Boolean track;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "application_id")
     private Application application;
@@ -31,12 +34,18 @@ public class ApplicationPlant extends BaseEntity{
     @JoinColumn(name = "plant_id")
     private Plant plant;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "infrastructure_id")
     private Infrastructure infrastructure;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "applicationPlant")
     private List<Link> links = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "applicationPlant")
+    private List<Issue> issues = new ArrayList<>();
 
     public ApplicationPlant(Boolean track, Application application, Plant plant, Infrastructure infrastructure) {
         this.track = track;

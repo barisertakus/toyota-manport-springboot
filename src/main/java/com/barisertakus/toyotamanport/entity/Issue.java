@@ -2,6 +2,8 @@ package com.barisertakus.toyotamanport.entity;
 
 import javax.persistence.*;
 import com.barisertakus.toyotamanport.enums.ImpactType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -24,7 +26,7 @@ public class Issue extends BaseEntity{
 
     private String description;
 
-    @OneToMany(mappedBy = "issue")
-    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
-
+    @ManyToOne
+    @JoinColumn(name = "application_plant_id")
+    ApplicationPlant applicationPlant;
 }

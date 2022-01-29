@@ -17,18 +17,14 @@ import java.util.List;
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
-    private final InfrastructureService infrastructureService;
     private final ApplicationPlantService applicationPlantService;
-    private final ApplicationServerIssueService applicationServerIssueService;
     private final IssueService issueService;
     private final LinkService linkService;
     private final ModelMapper modelMapper;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, InfrastructureService infrastructureService, ApplicationPlantService applicationPlantService, ApplicationServerIssueService applicationServerIssueService, IssueService issueService, LinkService linkService, ModelMapper modelMapper) {
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ApplicationPlantService applicationPlantService, IssueService issueService, LinkService linkService, ModelMapper modelMapper) {
         this.applicationRepository = applicationRepository;
-        this.infrastructureService = infrastructureService;
         this.applicationPlantService = applicationPlantService;
-        this.applicationServerIssueService = applicationServerIssueService;
         this.issueService = issueService;
         this.linkService = linkService;
         this.modelMapper = modelMapper;
@@ -45,7 +41,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<IssueCreateDTO> issues = applicationCreateDTO.getIssues();
         List<ApplicationPlant> applicationPlants = applicationPlantService.saveByApplication(application, plants, infrastructures);
         linkService.saveAll(links, applicationPlants);
-        applicationServerIssueService.saveAll(application, issues);
+        issueService.saveAll(issues, applicationPlants);
         return true;
     }
 
