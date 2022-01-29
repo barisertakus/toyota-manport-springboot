@@ -15,6 +15,4 @@ public class IssueCreateDTO {
     private String description;
 
     private String country;
-
-    private String server;
 }

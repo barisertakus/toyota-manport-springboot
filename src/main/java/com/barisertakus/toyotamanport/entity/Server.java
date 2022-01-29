@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -21,7 +19,4 @@ public class Server extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "plant_id")
     private Plant plant;
-
-    @OneToMany(mappedBy = "server")
-    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
 }

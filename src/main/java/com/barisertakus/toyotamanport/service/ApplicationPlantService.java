@@ -11,4 +11,5 @@ public interface ApplicationPlantService{
     List<ApplicationPlant> saveByApplication(Application application, List<PlantWithTrackDTO> plantDTOList, List<InfrastructureCreateDTO> infrastructureDTOList);
     ApplicationPlant findByApplicationIdAndPlantId(Long applicationId, Long plantId);
     ApplicationPlant findById(Long applicationPlantId);
+    ApplicationPlant getApplicationPlantByCountry(String country, List<ApplicationPlant> applicationPlants);
 }

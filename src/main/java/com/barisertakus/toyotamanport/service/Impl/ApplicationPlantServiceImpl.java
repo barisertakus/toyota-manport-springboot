@@ -120,4 +120,16 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
         log.error("Application and plant record could not be found. applicationPlantId {}", applicationPlantId);
         throw new IllegalArgumentException("Application and Plant record could not be found.");
     }
+
+    @Override
+
+    public ApplicationPlant getApplicationPlantByCountry(String country, List<ApplicationPlant> applicationPlants){
+        Optional<ApplicationPlant> applicationPlantOpt = applicationPlants.stream().filter(applicationPlant -> applicationPlant.getPlant().getCountry().equals(country))
+                .findAny();
+        if(applicationPlantOpt.isPresent()){
+            return applicationPlantOpt.get();
+        }
+        log.error("ApplicationPlant relationship couldn't be found. country : {}", country);
+        throw new IllegalArgumentException("ApplicationPlant relationship couldn't be found!");
+    }
 }
