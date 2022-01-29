@@ -2,6 +2,7 @@ package com.barisertakus.toyotamanport.entity;
 
 import com.barisertakus.toyotamanport.enums.BusinessAreaType;
 import com.barisertakus.toyotamanport.enums.ResponsibleTeam;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -51,9 +52,8 @@ public class Application extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ResponsibleTeam responsibleTeam;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "application")
     List<ApplicationPlant> applicationPlants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "application")
-    List<ApplicationServerIssue> applicationServerIssues = new ArrayList<>();
 }

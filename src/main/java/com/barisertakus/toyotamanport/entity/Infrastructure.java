@@ -1,5 +1,6 @@
 package com.barisertakus.toyotamanport.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Infrastructure {
+public class Infrastructure extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +21,7 @@ public class Infrastructure {
 
     private String nodeJsVersion;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "infrastructure")
     List<ApplicationPlant> applicationPlants = new ArrayList<>();
 }
