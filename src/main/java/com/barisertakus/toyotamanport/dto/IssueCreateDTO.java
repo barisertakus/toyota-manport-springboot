@@ -14,5 +14,7 @@ public class IssueCreateDTO {
 
     private String description;
 
+    private Boolean track = true;
+
     private String country;
 }

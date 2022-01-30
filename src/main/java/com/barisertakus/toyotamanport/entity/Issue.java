@@ -24,8 +24,11 @@ public class Issue extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ImpactType impactType;
 
+    private Boolean track;
+
     private String description;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "application_plant_id")
     ApplicationPlant applicationPlant;

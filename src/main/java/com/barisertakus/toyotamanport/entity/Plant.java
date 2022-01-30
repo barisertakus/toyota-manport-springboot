@@ -32,7 +32,7 @@ public class Plant extends BaseEntity{
     @OneToMany(mappedBy = "plant")
     private List<ApplicationPlant> applicationPlants = new ArrayList<>();
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(mappedBy = "plant")
     private List<Server> servers = new ArrayList<>();
 

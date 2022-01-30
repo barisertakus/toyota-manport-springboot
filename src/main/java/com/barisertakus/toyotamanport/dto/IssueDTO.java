@@ -13,5 +13,7 @@ public class IssueDTO {
 
     private String impactType;
 
+    private Boolean track;
+
     private String description;
 }

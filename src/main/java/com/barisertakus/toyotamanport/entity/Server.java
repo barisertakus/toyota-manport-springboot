@@ -1,5 +1,6 @@
 package com.barisertakus.toyotamanport.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -16,6 +17,7 @@ public class Server extends BaseEntity{
 
     private String name;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "plant_id")
     private Plant plant;
