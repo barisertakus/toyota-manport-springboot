@@ -4,10 +4,13 @@ import com.barisertakus.toyotamanport.dto.ApplicationCreateDTO;
 import com.barisertakus.toyotamanport.dto.ApplicationDTO;
 import com.barisertakus.toyotamanport.dto.ApplicationManagementDTO;
 import com.barisertakus.toyotamanport.dto.PlantDTO;
+import com.barisertakus.toyotamanport.entity.Application;
 import com.barisertakus.toyotamanport.service.ApplicationService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/application")
@@ -28,5 +31,10 @@ public class ApplicationController {
     @PostMapping("/save")
     public ResponseEntity<Boolean> save(@RequestBody ApplicationCreateDTO applicationCreateDTO){
         return ResponseEntity.ok(applicationService.save(applicationCreateDTO));
+    }
+
+    @GetMapping("/getAllForDashboard")
+    public ResponseEntity<List<Application>> getAllForDashboard(){
+        return ResponseEntity.ok(applicationService.getAllForDashboard());
     }
 }

@@ -51,4 +51,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         Page<ApplicationManagementDTO> applications = applicationRepository.findApplicationsWithLivePlants(pageable);
         return applications;
     }
+
+    @Override
+    public List<Application> getAllForDashboard() {
+        return applicationRepository.findAll();
+    }
 }
