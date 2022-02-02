@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     @Query(value = "SELECT new com.barisertakus.toyotamanport.dto.ApplicationManagementDTO(" +
             "a.id, a.shortName, a.track, a.lineStopRisk," +
@@ -18,4 +20,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             countQuery = "SELECT count(a.id) from Application a " +
                     "WHERE a.isActive = TRUE")
     Page<ApplicationManagementDTO> findApplicationsWithLivePlants(Pageable pageable);
+
+    List<Application> findByIsActiveTrue();
 }

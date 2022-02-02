@@ -1,6 +1,7 @@
 package com.barisertakus.toyotamanport.service.Impl;
 
 import com.barisertakus.toyotamanport.dto.*;
+import com.barisertakus.toyotamanport.dto.ApplicationDashboardDTO;
 import com.barisertakus.toyotamanport.entity.Application;
 import com.barisertakus.toyotamanport.entity.ApplicationPlant;
 import com.barisertakus.toyotamanport.repository.ApplicationRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -53,7 +55,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<Application> getAllForDashboard() {
-        return applicationRepository.findAll();
+    public List<ApplicationDashboardDTO> getAllForDashboard() {
+        List<Application> applications = applicationRepository.findByIsActiveTrue();
+        List<ApplicationDashboardDTO> applicationDashboardDTOS = applications.stream().map(application ->
+                modelMapper.map(application, ApplicationDashboardDTO.class)).collect(Collectors.toList());
+
+        return applicationDashboardDTOS;
     }
 }

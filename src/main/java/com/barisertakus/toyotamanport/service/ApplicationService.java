@@ -1,9 +1,8 @@
 package com.barisertakus.toyotamanport.service;
 
 import com.barisertakus.toyotamanport.dto.ApplicationCreateDTO;
-import com.barisertakus.toyotamanport.dto.ApplicationDTO;
 import com.barisertakus.toyotamanport.dto.ApplicationManagementDTO;
-import com.barisertakus.toyotamanport.entity.Application;
+import com.barisertakus.toyotamanport.dto.ApplicationDashboardDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,5 +12,5 @@ public interface ApplicationService {
 
     Page<ApplicationManagementDTO> getAll(int pageNo, int pageSize, String sortType, String sortField);
 
-    List<Application> getAllForDashboard();
+    List<ApplicationDashboardDTO> getAllForDashboard();
 }
