@@ -13,4 +13,6 @@ public interface PlantRepository extends JpaRepository<Plant, Long> {
     Page<Plant> findByIsActiveTrue(Pageable pageable);
 
     List<Plant> getAllByIsActiveTrue();
+
+    List<Plant> findByIdIn(List<Long> plantIdList);
 }

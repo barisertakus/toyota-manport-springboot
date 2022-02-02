@@ -1,6 +1,9 @@
 package com.barisertakus.toyotamanport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(of = { "id", "country" })
 public class Plant extends BaseEntity{
 
     @Id
@@ -24,9 +28,11 @@ public class Plant extends BaseEntity{
 
     private int liveAppCount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "plant")
     private List<ApplicationPlant> applicationPlants = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "plant")
     private List<Server> servers = new ArrayList<>();
 

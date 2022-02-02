@@ -1,6 +1,7 @@
 package com.barisertakus.toyotamanport.entity;
 
 import com.barisertakus.toyotamanport.enums.ServerType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ public class Link extends BaseEntity{
 
     private ServerType serverType; // prod-test
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "application_plant_id")
     ApplicationPlant applicationPlant;
