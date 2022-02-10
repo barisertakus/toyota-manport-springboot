@@ -7,6 +7,7 @@ import com.barisertakus.toyotamanport.entity.ApplicationPlant;
 import com.barisertakus.toyotamanport.repository.ApplicationRepository;
 import com.barisertakus.toyotamanport.service.*;
 import com.barisertakus.toyotamanport.utils.CreatePageable;
+import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ApplicationPlantService applicationPlantService;
@@ -42,9 +44,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<LinkCreateDTO> links = applicationCreateDTO.getLinks();
         List<IssueCreateDTO> issues = applicationCreateDTO.getIssues();
         List<ApplicationPlant> applicationPlants = applicationPlantService.saveByApplication(application, plants, infrastructures);
-        linkService.saveAll(links, applicationPlants);
-        issueService.saveAll(issues, applicationPlants);
-        return true;
+        if(!applicationPlants.isEmpty()){
+            linkService.saveAll(links, applicationPlants);
+            issueService.saveAll(issues, applicationPlants);
+            return true;
+        }
+        log.info("The application has been recorded without being installed in any country.");
+        return false;
     }
 
     @Override

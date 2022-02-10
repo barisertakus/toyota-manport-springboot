@@ -13,10 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +39,9 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
                     generateApplicationPlantsAndInfrastructures(application, plantDTOList, plants, infrastructureDTOList);
             List<ApplicationPlant> applicationPlants = applicationPlantsAndInfrastructures.getApplicationPlants();
             List<Infrastructure> infrastructures = applicationPlantsAndInfrastructures.getInfrastructures();
+            if (applicationPlants.isEmpty()) {
+                return Collections.emptyList();
+            }
             infrastructureService.saveAll(infrastructures);
             return applicationPlantRepository.saveAll(applicationPlants);
         }
@@ -50,13 +50,15 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
     }
 
     private ApplicationPlantsAndInfrastructuresDTO generateApplicationPlantsAndInfrastructures(
-            Application application, List<PlantWithTrackDTO> plantDTOList, List<Plant> plants, List<InfrastructureCreateDTO> infrastructureDTOList) {
+            Application application, List<PlantWithTrackDTO> plantDTOList,
+            List<Plant> plants, List<InfrastructureCreateDTO> infrastructureDTOList
+    ) {
         List<Infrastructure> infrastructures = new ArrayList<>();
         List<ApplicationPlant> applicationPlants = plantDTOList.stream().map(plantDTO -> {
             Boolean track = plantDTO.getTrack(); // application - country track.
             Plant plant = getPlantFromPlantListById(plantDTO.getId(), plants);
             Infrastructure infrastructure = getInfrastructureByCountry(plant.getCountry(), infrastructureDTOList);
-            if(infrastructure != null)
+            if (infrastructure != null)
                 infrastructures.add(infrastructure);
             ApplicationPlant applicationPlant = new ApplicationPlant(track, application, plant, infrastructure);
             addApplicationPlantToObjects(applicationPlant, application, plant, infrastructure);
@@ -97,7 +99,7 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
     private void addApplicationPlantToObjects(ApplicationPlant applicationPlant, Application application, Plant plant, Infrastructure infrastructure) {
         application.getApplicationPlants().add(applicationPlant);
         plant.getApplicationPlants().add(applicationPlant);
-        if(infrastructure != null)
+        if (infrastructure != null)
             infrastructure.getApplicationPlants().add(applicationPlant);
     }
 
@@ -123,10 +125,10 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
 
     @Override
 
-    public ApplicationPlant getApplicationPlantByCountry(String country, List<ApplicationPlant> applicationPlants){
+    public ApplicationPlant getApplicationPlantByCountry(String country, List<ApplicationPlant> applicationPlants) {
         Optional<ApplicationPlant> applicationPlantOpt = applicationPlants.stream().filter(applicationPlant -> applicationPlant.getPlant().getCountry().equals(country))
                 .findAny();
-        if(applicationPlantOpt.isPresent()){
+        if (applicationPlantOpt.isPresent()) {
             return applicationPlantOpt.get();
         }
         log.error("ApplicationPlant relationship couldn't be found. country : {}", country);
