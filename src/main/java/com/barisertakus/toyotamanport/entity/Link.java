@@ -40,6 +40,7 @@ public class Link extends BaseEntity{
 
     private String dbNode2;
 
+    @Enumerated(EnumType.STRING)
     private ServerType serverType; // prod-test
 
     @JsonBackReference

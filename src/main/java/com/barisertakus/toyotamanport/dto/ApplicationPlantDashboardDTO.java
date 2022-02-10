@@ -13,4 +13,5 @@ import java.util.List;
 public class ApplicationPlantDashboardDTO {
     private PlantDashboardDTO plant;
     private List<IssueDashboardDTO> issues = new ArrayList<>();
+    private List<LinkDTO> links = new ArrayList<>();
 }
