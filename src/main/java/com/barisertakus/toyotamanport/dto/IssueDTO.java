@@ -15,5 +15,7 @@ public class IssueDTO {
 
     private Boolean track;
 
+    private Boolean status;
+
     private String description;
 }

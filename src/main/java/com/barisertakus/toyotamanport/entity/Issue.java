@@ -26,6 +26,8 @@ public class Issue extends BaseEntity{
 
     private Boolean track;
 
+    private Boolean status;
+
     private String description;
 
     @JsonIgnore
