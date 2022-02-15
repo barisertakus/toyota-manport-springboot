@@ -3,6 +3,7 @@ package com.barisertakus.toyotamanport.controller;
 import com.barisertakus.toyotamanport.dto.ApplicationCreateDTO;
 import com.barisertakus.toyotamanport.dto.ApplicationManagementDTO;
 import com.barisertakus.toyotamanport.dto.ApplicationDashboardDTO;
+import com.barisertakus.toyotamanport.dto.ApplicationViewDTO;
 import com.barisertakus.toyotamanport.service.ApplicationService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,10 @@ public class ApplicationController {
     @GetMapping("/getAllForDashboard")
     public ResponseEntity<List<ApplicationDashboardDTO>> getAllForDashboard(){
         return ResponseEntity.ok(applicationService.getAllForDashboard());
+    }
+
+    @GetMapping("/{shortName}")
+    public ResponseEntity<ApplicationViewDTO> getByShortName(@PathVariable String shortName){
+        return ResponseEntity.ok(applicationService.getByShortName(shortName));
     }
 }

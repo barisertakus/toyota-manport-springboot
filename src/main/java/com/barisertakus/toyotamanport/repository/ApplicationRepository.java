@@ -22,4 +22,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Page<ApplicationManagementDTO> findApplicationsWithLivePlants(Pageable pageable);
 
     List<Application> findByIsActiveTrue();
+
+    Application findByShortName(String shortName);
 }

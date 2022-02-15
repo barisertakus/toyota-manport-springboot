@@ -2,18 +2,19 @@ package com.barisertakus.toyotamanport.service.Impl;
 
 import com.barisertakus.toyotamanport.dto.*;
 import com.barisertakus.toyotamanport.dto.ApplicationDashboardDTO;
-import com.barisertakus.toyotamanport.entity.Application;
-import com.barisertakus.toyotamanport.entity.ApplicationPlant;
+import com.barisertakus.toyotamanport.entity.*;
 import com.barisertakus.toyotamanport.repository.ApplicationRepository;
 import com.barisertakus.toyotamanport.service.*;
 import com.barisertakus.toyotamanport.utils.CreatePageable;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,5 +68,57 @@ public class ApplicationServiceImpl implements ApplicationService {
                 modelMapper.map(application, ApplicationDashboardDTO.class)).collect(Collectors.toList());
 
         return applicationDashboardDTOS;
+    }
+
+    @Override
+    public ApplicationViewDTO getByShortName(String shortName) {
+        Application application = applicationRepository.findByShortName(shortName);
+        List<IssueDTO> issues = new ArrayList<>();
+        List<LinkCreateDTO> links = new ArrayList<>();
+        List<PlantWithTrackDTO> plants = new ArrayList<>();
+        List<InfrastructureCreateDTO> infrastructures = new ArrayList<>();
+        for(ApplicationPlant applicationPlant : application.getApplicationPlants()) {
+            issues.addAll(modelMapper.map(
+                    applicationPlant.getIssues(), new TypeToken<List<IssueDTO>>(){}.getType()
+            ));
+
+            Plant plant = applicationPlant.getPlant();
+            if(plant != null){
+                PlantWithTrackDTO plantWithTrackDTO = modelMapper.map(plant, PlantWithTrackDTO.class);
+                plantWithTrackDTO.setTrack(applicationPlant.getTrack());
+                plants.add(plantWithTrackDTO);
+            }
+
+            List<LinkCreateDTO> linksAdd = applicationPlant.getLinks().stream().map(link -> {
+                LinkCreateDTO linkCreateDTO = modelMapper.map(link, LinkCreateDTO.class);
+                if(plant != null)
+                    linkCreateDTO.setCountry(plant.getCountry());
+                return linkCreateDTO;
+            }).collect(Collectors.toList());
+            links.addAll(linksAdd);
+
+            Infrastructure infrastructure = applicationPlant.getInfrastructure();
+            if(infrastructure != null){
+                InfrastructureCreateDTO infrastructureDTO =
+                        modelMapper.map(applicationPlant.getInfrastructure(), InfrastructureCreateDTO.class);
+                if(plant != null)
+                    infrastructureDTO.setCountry(plant.getCountry());
+                infrastructures.add(infrastructureDTO);
+            }
+        }
+        return generateApplicationView(application, plants, infrastructures, issues, links);
+    }
+
+    public ApplicationViewDTO generateApplicationView (
+            Application application, List<PlantWithTrackDTO> plants, List<InfrastructureCreateDTO> infrastructures,
+            List<IssueDTO> issues, List<LinkCreateDTO> links) {
+        return new ApplicationViewDTO(
+                application.getId(), application.getFullName(), application.getShortName(),
+                application.getTrack(), application.getLineStopRisk(), application.getLineCountOfBackendCode(),
+                application.getLineCountOfFrontendCode(), application.getLivePlants(),
+                application.getReleaseDate(), application.getResponsible(), application.getBackend(),
+                application.getFrontend(), application.getDatabase(), application.getBusinessAreaType(),
+                application.getResponsibleTeam(),
+                plants, infrastructures, issues, links);
     }
 }
