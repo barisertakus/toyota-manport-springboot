@@ -1,10 +1,12 @@
 package com.barisertakus.toyotamanport.dto;
 
+import com.barisertakus.toyotamanport.entity.Infrastructure;
 import com.barisertakus.toyotamanport.enums.BusinessAreaType;
 import com.barisertakus.toyotamanport.enums.ResponsibleTeam;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,8 +14,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ApplicationDTO {
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class ApplicationViewDTO {
     private Long id;
 
     private String fullName;
@@ -43,4 +46,12 @@ public class ApplicationDTO {
     private BusinessAreaType businessAreaType;
 
     private ResponsibleTeam responsibleTeam;
+
+    private List<PlantWithTrackDTO> plants = new ArrayList<>();
+
+    private List<InfrastructureCreateDTO> infrastructures = new ArrayList<>();
+
+    private List<IssueDTO> issues = new ArrayList<>();
+
+    private List<LinkCreateDTO> links = new ArrayList<>();
 }
