@@ -73,6 +73,14 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
         return plants;
     }
 
+    public ApplicationPlant generateApplicationPlant(PlantWithTrackDTO plantDTO, List<Plant> plants,
+                                                     Application application, Infrastructure infrastructure){
+        Plant plant = getPlantFromPlantListById(plantDTO.getId(), plants);
+        ApplicationPlant newApplicationPlant = new ApplicationPlant(plantDTO.getTrack(), application, plant, infrastructure);
+        addApplicationPlantToObjects(newApplicationPlant, application, plant, infrastructure);
+        return newApplicationPlant;
+    }
+
     private List<Long> getPlantIdList(List<PlantWithTrackDTO> plantDTOList) {
         return plantDTOList.stream().map(PlantWithTrackDTO::getId).collect(Collectors.toList());
     }
@@ -101,6 +109,73 @@ public class ApplicationPlantServiceImpl implements ApplicationPlantService {
         plant.getApplicationPlants().add(applicationPlant);
         if (infrastructure != null)
             infrastructure.getApplicationPlants().add(applicationPlant);
+    }
+
+    @Override
+    public List<ApplicationPlant> editApplicationPlants(Application application, List<PlantWithTrackDTO> plantDTOList,
+                                                        List<InfrastructureCreateDTO> infrastructureDTOList){
+        ApplicationPlantsAndInfrastructuresDTO applicationPlantDetails = editApplicationPlantDetails(application, plantDTOList, infrastructureDTOList);
+        List<ApplicationPlant> applicationPlants = applicationPlantDetails.getApplicationPlants();
+        List<Infrastructure> infrastructures = applicationPlantDetails.getInfrastructures();
+        application.setApplicationPlants(applicationPlants);
+        infrastructureService.saveAll(infrastructures);
+        return applicationPlantRepository.saveAll(applicationPlants);
+    }
+
+    private ApplicationPlantsAndInfrastructuresDTO editApplicationPlantDetails(Application application, List<PlantWithTrackDTO> plantDTOList,
+                                                                               List<InfrastructureCreateDTO> infrastructureDTOList){
+        List<ApplicationPlant> applicationPlants = application.getApplicationPlants();
+        List<Infrastructure> infrastructures = new ArrayList<>();
+        List<Long> deleteInfrastructureIdList = new ArrayList<>();
+        List<Plant> plants = getPlantsByPlantDTOList(plantDTOList);
+        List<ApplicationPlant> applicationPlantList = plantDTOList.stream().map(plantDTO -> {
+            ApplicationPlant applicationPlant = checkApplicationPlantWithPlantId(applicationPlants, plantDTO.getId());
+            Infrastructure infrastructure = getInfrastructureByCountry(plantDTO.getCountry(), infrastructureDTOList);
+            if(infrastructure != null)
+                infrastructures.add(infrastructure);
+            if (applicationPlant != null) {
+                return editExistingApplicationPlant(applicationPlant, infrastructure, plantDTO,deleteInfrastructureIdList);
+            } else {
+                return generateApplicationPlant(plantDTO, plants, application, infrastructure);
+            }
+        }).collect(Collectors.toList());
+
+        deleteRemovedPlants(applicationPlants, plantDTOList);
+        infrastructureService.deleteAllById(deleteInfrastructureIdList);
+        return new ApplicationPlantsAndInfrastructuresDTO(applicationPlantList, infrastructures);
+    }
+
+    public ApplicationPlant editExistingApplicationPlant(ApplicationPlant applicationPlant, Infrastructure infrastructure,
+                                                         PlantWithTrackDTO plantDTO, List<Long> idList){
+        applicationPlant.setTrack(plantDTO.getTrack());
+
+        if(applicationPlant.getInfrastructure() != null && infrastructure == null){ // infrastructure has been removed from applicationPlant
+            idList.add(applicationPlant.getInfrastructure().getId());
+        }
+        applicationPlant.setInfrastructure(infrastructure);
+        return applicationPlant;
+    }
+
+    private void deleteRemovedPlants(List<ApplicationPlant> applicationPlants, List<PlantWithTrackDTO> plants){
+        List<ApplicationPlant> applicationPlantsDelete = new ArrayList<>();
+        applicationPlants.forEach(applicationPlant -> {
+            if(!checkApplicationPlantInPlants(applicationPlant, plants))
+                applicationPlantsDelete.add(applicationPlant);
+        });
+        if(!applicationPlantsDelete.isEmpty())
+            applicationPlantRepository.deleteAll(applicationPlantsDelete);
+    }
+
+    private Boolean checkApplicationPlantInPlants(ApplicationPlant applicationPlant, List<PlantWithTrackDTO> plants){
+        Optional<PlantWithTrackDTO> plant = plants.stream()
+                .filter(plantDTO -> applicationPlant.getPlant().getId().equals(plantDTO.getId())).findAny();
+        return plant.isPresent();
+    }
+
+    private ApplicationPlant checkApplicationPlantWithPlantId(List<ApplicationPlant> applicationPlants, Long plantId){
+        Optional<ApplicationPlant> applicationPlantOptional = applicationPlants.stream()
+                .filter(applicationPlant -> applicationPlant.getPlant().getId().equals(plantId)).findAny();
+        return applicationPlantOptional.orElse(null);
     }
 
     @Override

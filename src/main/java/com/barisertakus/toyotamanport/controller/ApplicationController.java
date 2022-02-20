@@ -41,4 +41,9 @@ public class ApplicationController {
     public ResponseEntity<ApplicationViewDTO> getByShortName(@PathVariable String shortName){
         return ResponseEntity.ok(applicationService.getByShortName(shortName));
     }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Boolean> edit(@RequestBody ApplicationCreateDTO applicationCreateDTO){
+        return ResponseEntity.ok(applicationService.edit(applicationCreateDTO));
+    }
 }

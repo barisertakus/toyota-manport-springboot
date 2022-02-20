@@ -51,7 +51,7 @@ public class ApplicationViewDTO {
 
     private List<InfrastructureCreateDTO> infrastructures = new ArrayList<>();
 
-    private List<IssueDTO> issues = new ArrayList<>();
+    private List<IssueCreateDTO> issues = new ArrayList<>();
 
     private List<LinkCreateDTO> links = new ArrayList<>();
 }

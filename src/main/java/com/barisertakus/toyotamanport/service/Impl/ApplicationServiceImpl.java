@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Boolean save(ApplicationCreateDTO applicationCreateDTO) {
         Application application = modelMapper.map(applicationCreateDTO, Application.class);
         applicationRepository.save(application);
+        return saveApplicationDetails(applicationCreateDTO, application);
+    }
+
+    public Boolean saveApplicationDetails(ApplicationCreateDTO applicationCreateDTO, Application application){
         List<PlantWithTrackDTO> plants = applicationCreateDTO.getPlants();
         List<InfrastructureCreateDTO> infrastructures = applicationCreateDTO.getInfrastructures();
         List<LinkCreateDTO> links = applicationCreateDTO.getLinks();
@@ -73,14 +78,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationViewDTO getByShortName(String shortName) {
         Application application = applicationRepository.findByShortName(shortName);
-        List<IssueDTO> issues = new ArrayList<>();
+        List<IssueCreateDTO> issues = new ArrayList<>();
         List<LinkCreateDTO> links = new ArrayList<>();
         List<PlantWithTrackDTO> plants = new ArrayList<>();
         List<InfrastructureCreateDTO> infrastructures = new ArrayList<>();
         for(ApplicationPlant applicationPlant : application.getApplicationPlants()) {
-            issues.addAll(modelMapper.map(
-                    applicationPlant.getIssues(), new TypeToken<List<IssueDTO>>(){}.getType()
-            ));
 
             Plant plant = applicationPlant.getPlant();
             if(plant != null){
@@ -88,6 +90,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 plantWithTrackDTO.setTrack(applicationPlant.getTrack());
                 plants.add(plantWithTrackDTO);
             }
+
+            List<IssueCreateDTO> issuesAdd = applicationPlant.getIssues().stream().map(issue -> {
+                IssueCreateDTO issueCreateDTO = modelMapper.map(issue, IssueCreateDTO.class);
+                issueCreateDTO.setCountry(plant.getCountry());
+                return issueCreateDTO;
+            }).collect(Collectors.toList());
+            issues.addAll(issuesAdd);
 
             List<LinkCreateDTO> linksAdd = applicationPlant.getLinks().stream().map(link -> {
                 LinkCreateDTO linkCreateDTO = modelMapper.map(link, LinkCreateDTO.class);
@@ -109,9 +118,31 @@ public class ApplicationServiceImpl implements ApplicationService {
         return generateApplicationView(application, plants, infrastructures, issues, links);
     }
 
+    @Override
+    public Application getById(Long id) {
+        Optional<Application> application = applicationRepository.findById(id);
+        return application.orElse(null);
+    }
+
+    @Override
+    public Boolean edit(ApplicationCreateDTO applicationCreateDTO) {
+        Application application = getById(applicationCreateDTO.getId());
+        Application applicationMap = modelMapper.map(applicationCreateDTO, Application.class);
+        applicationRepository.save(applicationMap);
+        editApplicationDetails(applicationCreateDTO, application);
+        return true;
+    }
+
+    public Boolean editApplicationDetails(ApplicationCreateDTO applicationCreateDTO, Application application){
+        List<ApplicationPlant> applicationPlants = applicationPlantService.editApplicationPlants(
+                application, applicationCreateDTO.getPlants(), applicationCreateDTO.getInfrastructures()
+        );
+        return true;
+    }
+
     public ApplicationViewDTO generateApplicationView (
             Application application, List<PlantWithTrackDTO> plants, List<InfrastructureCreateDTO> infrastructures,
-            List<IssueDTO> issues, List<LinkCreateDTO> links) {
+            List<IssueCreateDTO> issues, List<LinkCreateDTO> links) {
         return new ApplicationViewDTO(
                 application.getId(), application.getFullName(), application.getShortName(),
                 application.getTrack(), application.getLineStopRisk(), application.getLineCountOfBackendCode(),
