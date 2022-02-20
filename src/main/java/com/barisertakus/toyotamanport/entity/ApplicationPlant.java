@@ -40,11 +40,11 @@ public class ApplicationPlant extends BaseEntity{
     private Infrastructure infrastructure;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "applicationPlant")
+    @OneToMany(mappedBy = "applicationPlant", cascade = CascadeType.REMOVE)
     private List<Link> links = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "applicationPlant")
+    @OneToMany(mappedBy = "applicationPlant", cascade = CascadeType.REMOVE)
     private List<Issue> issues = new ArrayList<>();
 
     public ApplicationPlant(Boolean track, Application application, Plant plant, Infrastructure infrastructure) {
