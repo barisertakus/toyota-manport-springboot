@@ -137,6 +137,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<ApplicationPlant> applicationPlants = applicationPlantService.editApplicationPlants(
                 application, applicationCreateDTO.getPlants(), applicationCreateDTO.getInfrastructures()
         );
+
+        linkService.saveAll(applicationCreateDTO.getLinks(), applicationPlants);
+        issueService.saveAll(applicationCreateDTO.getIssues(), applicationPlants);
         return true;
     }
 
