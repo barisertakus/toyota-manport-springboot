@@ -5,6 +5,7 @@ import com.barisertakus.toyotamanport.dto.PlantDTO;
 import com.barisertakus.toyotamanport.entity.Plant;
 import com.barisertakus.toyotamanport.repository.PlantRepository;
 import com.barisertakus.toyotamanport.service.PlantService;
+import com.barisertakus.toyotamanport.service.ServerService;
 import com.barisertakus.toyotamanport.utils.CreatePageable;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -17,10 +18,12 @@ import java.util.List;
 @Service
 public class PlantServiceImpl implements PlantService {
     private final PlantRepository plantRepository;
+    private final ServerService serverService;
     private final ModelMapper modelMapper;
 
-    public PlantServiceImpl(PlantRepository plantRepository, ModelMapper modelMapper) {
+    public PlantServiceImpl(PlantRepository plantRepository, ServerService serverService, ModelMapper modelMapper) {
         this.plantRepository = plantRepository;
+        this.serverService = serverService;
         this.modelMapper = modelMapper;
     }
 
@@ -30,6 +33,7 @@ public class PlantServiceImpl implements PlantService {
         if(!exist){
             Plant plant = modelMapper.map(plantDTO, Plant.class);
             plantRepository.save(plant);
+            serverService.addServersToPlant(plant);
             return true;
         }
         throw new IllegalArgumentException("ShortCode or FullName already exists!");
