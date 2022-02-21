@@ -21,4 +21,9 @@ public class Server extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "plant_id")
     private Plant plant;
+
+    public Server(String name, Plant plant) {
+        this.name = name;
+        this.plant = plant;
+    }
 }

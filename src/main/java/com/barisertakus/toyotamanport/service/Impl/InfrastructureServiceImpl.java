@@ -44,4 +44,11 @@ public class InfrastructureServiceImpl implements InfrastructureService {
         throw new IllegalArgumentException("An error occurred while saving infrastructures!");
     }
 
+    @Override
+    public void deleteAllById(List<Long> idList) {
+        if(!idList.isEmpty()){
+            infrastructureRepository.deleteAllById(idList);
+        }
+    }
+
 }
